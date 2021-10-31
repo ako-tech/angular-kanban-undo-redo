@@ -1,0 +1,20 @@
+<ako-kanban-toolbar></ako-kanban-toolbar>
+<div class="board__lists">
+  <ako-kanban-list
+    *ngFor="let list of board.lists; trackBy: trackById"
+    [list]="list"
+    (addTask)="addTaskToList(list)"
+    (titleChanged)="updateTitleInList(list, $event)"
+    (remove)="removeList(list)"
+  >
+    <ako-kanban-drag-handle slot="dragHandle"></ako-kanban-drag-handle>
+    <ako-kanban-list-tasks-wrapper class="board__list__task-wrapper">
+      <ako-kanban-task
+        *ngFor="let task of list.tasks; index as taskIndex; trackBy: trackById"
+        [task]="task"
+        (remove)="removeTaskFromList(list, taskIndex)"
+        (updateDescription)="updateTaskDescription(task, $event)"
+      ></ako-kanban-task>
+    </ako-kanban-list-tasks-wrapper>
+  </ako-kanban-list>
+</div>

@@ -1,0 +1,25 @@
+:host {
+  --kanban-list-separator-color: #e0e0e0;
+  --kanban-list-add-text-color: #606060;
+
+  --kanban-task-bg-color: #fff;
+  --kanban-task-text-color: #333;
+
+  display: flex;
+  flex-direction: column;
+}
+
+.board__lists {
+  display: flex;
+  flex-direction: row;
+  align-items: stretch;
+  justify-content: center;
+  overflow-x: auto;
+  padding: var(--half-separation) 0;
+}
+
+@media only screen and (max-width: 1050px) {
+  .board__lists {
+    justify-content: flex-start;
+  }
+}
