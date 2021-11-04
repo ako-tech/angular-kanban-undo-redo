@@ -1,4 +1,5 @@
 import { Injectable } from '@angular/core';
+import { TransferTaskData } from './common';
 
 import {
   dummyBoard,
@@ -18,6 +19,8 @@ export class KanbanStateService {
     list.title = newTitle;
   }
 
+  moveList(fromIndex: number, toIndex: number): void {}
+
   removeList(listToRemove: KanbanList): void {
     this.board.lists = this.board.lists.filter((list) => list !== listToRemove);
   }
@@ -33,4 +36,13 @@ export class KanbanStateService {
   updateTask(task: KanbanTask, newDescription: string): void {
     task.description = newDescription;
   }
+
+  reorderTask(list: KanbanList, fromIndex: number, toIndex: number): void {}
+
+  transferTask({
+    fromList,
+    toList,
+    fromIndex,
+    toIndex,
+  }: TransferTaskData): void {}
 }
