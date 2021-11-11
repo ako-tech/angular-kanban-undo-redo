@@ -1,27 +1,23 @@
-# Project
+# Kanban - Angular Cdk - Undo/Redo
 
-This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 12.2.12.
+Tablero básico Kanban que sirve como proyecto de apoyo para:
 
-## Development server
+- El tutorial en el que vemos como podemos crear una interfaz de Drag & Drop en Angular, usando el CDK de Angular Material. [Ver Video](https://youtu.be/s6FlXN3UkE8)
+- Y el tutorial en el que convertimos las acciones que modifican el estado del tablero en comandos para añadir la posibilidad de deshacer y rehacer las diferentes acciones. Ver Vídeo(En producción)
 
-Run `ng serve` for a dev server. Navigate to `http://localhost:4200/`. The app will automatically reload if you change any of the source files.
+## Ramas (Branches)
 
-## Code scaffolding
+El repositorio esta dividido en ramas, cada una de las cuales se corresponde con una etapa del desarrollo de la aplicación.
 
-Run `ng generate component component-name` to generate a new component. You can also use `ng generate directive|pipe|service|class|guard|interface|enum|module`.
+- [Aplicación Base](https://github.com/ako-tech/angular-kanban-undo-redo)
+- [Angular CDK](https://github.com/ako-tech/angular-kanban-undo-redo/cdk)
+- Undo/Redo
+- Versión Reactiva
 
-## Build
+## Comandos
 
-Run `ng build` to build the project. The build artifacts will be stored in the `dist/` directory.
+El proyecto está realizado sobre la v13 de Angular.
 
-## Running unit tests
+Para levantar un servidor de desarrollo usar el comando `ng serve`. Este estará disponible en `http://localhost:4200/`.
 
-Run `ng test` to execute the unit tests via [Karma](https://karma-runner.github.io).
-
-## Running end-to-end tests
-
-Run `ng e2e` to execute the end-to-end tests via a platform of your choice. To use this command, you need to first add a package that implements end-to-end testing capabilities.
-
-## Further help
-
-To get more help on the Angular CLI use `ng help` or go check out the [Angular CLI Overview and Command Reference](https://angular.io/cli) page.
+Para compilar la aplicación usar el comando `ng build`. Pudiendo usar la opcion `--prod` para compilar la versión de producción. Los archivos de la aplicación estarán disponibles en la carpeta `dist/`.
