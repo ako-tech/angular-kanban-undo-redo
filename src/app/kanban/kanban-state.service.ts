@@ -1,3 +1,4 @@
+import { moveItemInArray, transferArrayItem } from '@angular/cdk/drag-drop';
 import { Injectable } from '@angular/core';
 import { TransferTaskData } from './common';
 
@@ -19,7 +20,9 @@ export class KanbanStateService {
     list.title = newTitle;
   }
 
-  moveList(fromIndex: number, toIndex: number): void {}
+  moveList(fromIndex: number, toIndex: number): void {
+    moveItemInArray(this.board.lists, fromIndex, toIndex);
+  }
 
   removeList(listToRemove: KanbanList): void {
     this.board.lists = this.board.lists.filter((list) => list !== listToRemove);
@@ -37,12 +40,16 @@ export class KanbanStateService {
     task.description = newDescription;
   }
 
-  reorderTask(list: KanbanList, fromIndex: number, toIndex: number): void {}
+  reorderTask(list: KanbanList, fromIndex: number, toIndex: number): void {
+    moveItemInArray(list.tasks, fromIndex, toIndex);
+  }
 
   transferTask({
     fromList,
     toList,
     fromIndex,
     toIndex,
-  }: TransferTaskData): void {}
+  }: TransferTaskData): void {
+    transferArrayItem(fromList.tasks, toList.tasks, fromIndex, toIndex);
+  }
 }
