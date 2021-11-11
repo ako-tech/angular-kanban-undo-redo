@@ -10,7 +10,7 @@ Tablero básico Kanban que sirve como proyecto de apoyo para:
 El repositorio esta dividido en ramas, cada una de las cuales se corresponde con una etapa del desarrollo de la aplicación.
 
 - [Aplicación Base](https://github.com/ako-tech/angular-kanban-undo-redo)
-- [Angular CDK](https://github.com/ako-tech/angular-kanban-undo-redo/cdk)
+- [Angular CDK](https://github.com/ako-tech/angular-kanban-undo-redo/tree/cdk)
 - Undo/Redo
 - Versión Reactiva
 
