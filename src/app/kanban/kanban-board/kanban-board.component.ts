@@ -1,5 +1,6 @@
 import { CdkDragDrop } from '@angular/cdk/drag-drop';
 import { Component } from '@angular/core';
+import { CommandManagerService } from '../../command-manager';
 
 import { KanbanStateService } from '../kanban-state.service';
 import { KanbanBoard, KanbanList, KanbanTask } from '../model';
@@ -8,7 +9,7 @@ import { KanbanBoard, KanbanList, KanbanTask } from '../model';
   selector: 'ako-kanban-board',
   templateUrl: './kanban-board.component.html',
   styleUrls: ['./kanban-board.component.scss'],
-  providers: [KanbanStateService],
+  providers: [KanbanStateService, CommandManagerService],
 })
 export class KanbanBoardComponent {
   board: KanbanBoard = this.kanbanService.board;

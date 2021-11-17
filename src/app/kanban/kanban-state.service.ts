@@ -1,5 +1,7 @@
 import { moveItemInArray, transferArrayItem } from '@angular/cdk/drag-drop';
 import { Injectable } from '@angular/core';
+import { CommandManagerService } from '../command-manager';
+import { ReorderListCommand } from './commands/reorder-list.command';
 import { TransferTaskData } from './common';
 
 import {
@@ -14,14 +16,19 @@ import {
 export class KanbanStateService {
   public board: KanbanBoard = dummyBoard;
 
-  constructor() {}
+  constructor(private commandManager: CommandManagerService) {}
 
   updateListTitle(list: KanbanList, newTitle: string): void {
     list.title = newTitle;
   }
 
   moveList(fromIndex: number, toIndex: number): void {
-    moveItemInArray(this.board.lists, fromIndex, toIndex);
+    const command = new ReorderListCommand(
+      this.board.lists,
+      fromIndex,
+      toIndex
+    );
+    this.commandManager.execute(command);
   }
 
   removeList(listToRemove: KanbanList): void {
