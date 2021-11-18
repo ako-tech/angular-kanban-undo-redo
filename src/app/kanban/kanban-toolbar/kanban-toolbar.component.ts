@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { CommandManagerService } from '../../command-manager';
 
 @Component({
   selector: 'ako-kanban-toolbar',
@@ -7,14 +8,18 @@ import { Component } from '@angular/core';
 })
 export class KanbanToolbarComponent {
   get canUndo(): boolean {
-    return false;
+    return this.commandManager.canUndo;
   }
   get canRedo(): boolean {
-    return false;
+    return this.commandManager.canRedo;
   }
 
-  constructor() {}
+  constructor(private commandManager: CommandManagerService) {}
 
-  undo(): void {}
-  redo(): void {}
+  undo(): void {
+    this.commandManager.undo();
+  }
+  redo(): void {
+    this.commandManager.redo();
+  }
 }

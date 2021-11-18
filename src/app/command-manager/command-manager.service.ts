@@ -6,6 +6,13 @@ export class CommandManagerService {
   private doneCommandsStack: Command[] = [];
   private undoneCommandsStack: Command[] = [];
 
+  get canUndo(): boolean {
+    return this.doneCommandsStack.length > 0;
+  }
+  get canRedo(): boolean {
+    return this.undoneCommandsStack.length > 0;
+  }
+
   execute(command: Command): void {
     command.execute();
 
