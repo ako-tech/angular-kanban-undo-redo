@@ -1,49 +1,87 @@
-import { Injectable } from '@angular/core';
-import { Command } from '.';
+import { Injectable, OnDestroy } from '@angular/core';
+import {
+  BehaviorSubject,
+  merge,
+  Observable,
+  Subject,
+  Subscription,
+} from 'rxjs';
+import { withLatestFrom } from 'rxjs/operators';
+
+import { Command, CommandManagerState } from '.';
+import {
+  addCommandToStack,
+  clearUndoneStack,
+  executeCommand,
+  extractLastCommandFromStack,
+  stackIsNotEmpty,
+  undoCommand,
+} from './operators';
 
 @Injectable()
-export class CommandManagerService {
-  private doneCommandsStack: Command[] = [];
-  private undoneCommandsStack: Command[] = [];
+export class CommandManagerService implements OnDestroy {
+  private state$ = new BehaviorSubject<CommandManagerState>({
+    doneCommandsStack: [],
+    undoneCommandsStack: [],
+  });
 
-  get canUndo(): boolean {
-    return this.doneCommandsStack.length > 0;
+  private execute$ = new Subject<Command>();
+  private undo$ = new Subject();
+  private redo$ = new Subject();
+
+  private executePipeline$: Observable<CommandManagerState> =
+    this.execute$.pipe(
+      withLatestFrom(this.state$),
+      executeCommand,
+      addCommandToStack('doneCommandsStack'),
+      clearUndoneStack
+    );
+
+  private undoPipeline$: Observable<CommandManagerState> = this.undo$.pipe(
+    withLatestFrom(this.state$, (_, state) => state),
+    extractLastCommandFromStack('doneCommandsStack'),
+    undoCommand,
+    addCommandToStack('undoneCommandsStack')
+  );
+
+  private redoPipeline$: Observable<CommandManagerState> = this.redo$.pipe(
+    withLatestFrom(this.state$, (_, state) => state),
+    extractLastCommandFromStack('undoneCommandsStack'),
+    executeCommand,
+    addCommandToStack('doneCommandsStack')
+  );
+
+  private subscription: Subscription;
+
+  canUndo$: Observable<boolean> = this.state$.pipe(
+    stackIsNotEmpty('doneCommandsStack')
+  );
+
+  canRedo$: Observable<boolean> = this.state$.pipe(
+    stackIsNotEmpty('undoneCommandsStack')
+  );
+
+  constructor() {
+    this.subscription = merge(
+      this.executePipeline$,
+      this.undoPipeline$,
+      this.redoPipeline$
+    ).subscribe((newState) => this.state$.next(newState));
   }
-  get canRedo(): boolean {
-    return this.undoneCommandsStack.length > 0;
+
+  ngOnDestroy() {
+    this.subscription.unsubscribe();
   }
 
   execute(command: Command): void {
-    command.execute();
-
-    this.doneCommandsStack.push(command);
-
-    this.resetUndoneStack();
+    this.execute$.next(command);
   }
 
   undo(): void {
-    if (this.doneCommandsStack.length === 0) {
-      return;
-    }
-
-    const lastDoneCommand = this.doneCommandsStack.pop()!;
-    lastDoneCommand.undo();
-
-    this.undoneCommandsStack.push(lastDoneCommand);
+    this.undo$.next();
   }
 
   redo(): void {
-    if (this.undoneCommandsStack.length === 0) {
-      return;
-    }
-
-    const lastUndoneCommand = this.undoneCommandsStack.pop()!;
-    lastUndoneCommand.execute();
-
-    this.doneCommandsStack.push(lastUndoneCommand);
-  }
-
-  private resetUndoneStack(): void {
-    this.undoneCommandsStack = [];
+    this.redo$.next();
   }
 }

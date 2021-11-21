@@ -1,2 +1,2 @@
-export * from './command.interface';
+export * from './interfaces';
 export * from './command-manager.service';

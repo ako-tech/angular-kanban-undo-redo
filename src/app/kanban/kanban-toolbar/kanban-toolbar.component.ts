@@ -1,18 +1,16 @@
-import { Component } from '@angular/core';
+import { ChangeDetectionStrategy, Component } from '@angular/core';
+import { Observable } from 'rxjs';
 import { CommandManagerService } from '../../command-manager';
 
 @Component({
   selector: 'ako-kanban-toolbar',
   templateUrl: './kanban-toolbar.component.html',
   styleUrls: ['./kanban-toolbar.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class KanbanToolbarComponent {
-  get canUndo(): boolean {
-    return this.commandManager.canUndo;
-  }
-  get canRedo(): boolean {
-    return this.commandManager.canRedo;
-  }
+  canUndo$: Observable<boolean> = this.commandManager.canUndo$;
+  canRedo$: Observable<boolean> = this.commandManager.canRedo$;
 
   constructor(private commandManager: CommandManagerService) {}
 
