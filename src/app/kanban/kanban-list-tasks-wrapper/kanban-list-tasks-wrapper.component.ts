@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { ChangeDetectionStrategy, Component } from '@angular/core';
 
 @Component({
   selector: 'ako-kanban-list-tasks-wrapper',
@@ -14,6 +14,7 @@ import { Component } from '@angular/core';
       }
     `,
   ],
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class KanbanListTasksWrapperComponent {
   constructor() {}

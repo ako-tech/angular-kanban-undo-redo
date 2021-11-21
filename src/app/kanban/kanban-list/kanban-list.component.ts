@@ -1,10 +1,17 @@
-import { Component, Input, Output, EventEmitter } from '@angular/core';
+import {
+  Component,
+  Input,
+  Output,
+  EventEmitter,
+  ChangeDetectionStrategy,
+} from '@angular/core';
 import { KanbanList } from '../model';
 
 @Component({
   selector: 'ako-kanban-list',
   templateUrl: './kanban-list.component.html',
   styleUrls: ['./kanban-list.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class KanbanListComponent {
   @Input() list!: KanbanList;

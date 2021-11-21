@@ -1,29 +1,24 @@
 import { BehaviorSubject } from 'rxjs';
-import { KanbanBoard, KanbanTask } from '../model';
+import { KanbanBoard } from '../model';
 import { AbstractBoardCommand } from './abstract-board.command';
 
-export class RemoveTaskFromListCommand extends AbstractBoardCommand {
-  private taskRemoved: KanbanTask;
+export class UpdateListTitleCommand extends AbstractBoardCommand {
+  private previousTitle: string;
 
   constructor(
     board: BehaviorSubject<KanbanBoard>,
     private listIndex: number,
-    private taskIndex: number
+    private newTitle: string
   ) {
     super(board);
-    this.taskRemoved = board.value.lists[listIndex].tasks[taskIndex];
+    this.previousTitle = board.value.lists[listIndex].title;
   }
 
   protected doCommandReducer(currentBoardValue: KanbanBoard): KanbanBoard {
     const listsClone = [...currentBoardValue.lists];
-    const originalList = listsClone[this.listIndex];
-
     listsClone[this.listIndex] = {
-      ...originalList,
-      tasks: [
-        ...originalList.tasks.slice(0, this.taskIndex),
-        ...originalList.tasks.slice(this.taskIndex + 1),
-      ],
+      ...listsClone[this.listIndex],
+      title: this.newTitle,
     };
 
     return {
@@ -31,17 +26,12 @@ export class RemoveTaskFromListCommand extends AbstractBoardCommand {
       lists: listsClone,
     };
   }
+
   protected undoCommandReducer(currentBoardValue: KanbanBoard): KanbanBoard {
     const listsClone = [...currentBoardValue.lists];
-    const originalList = listsClone[this.listIndex];
-
     listsClone[this.listIndex] = {
-      ...originalList,
-      tasks: [
-        ...originalList.tasks.slice(0, this.taskIndex),
-        this.taskRemoved,
-        ...originalList.tasks.slice(this.taskIndex),
-      ],
+      ...listsClone[this.listIndex],
+      title: this.previousTitle,
     };
 
     return {

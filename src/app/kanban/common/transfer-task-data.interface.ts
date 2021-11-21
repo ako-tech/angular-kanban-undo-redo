@@ -1,8 +1,6 @@
-import { KanbanList } from '../model';
-
 export interface TransferTaskData {
-  fromList: KanbanList;
+  fromListIndex: number;
   fromIndex: number;
-  toList: KanbanList;
+  toListIndex: number;
   toIndex: number;
 }

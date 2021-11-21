@@ -1,5 +1,6 @@
 import { CdkDragDrop } from '@angular/cdk/drag-drop';
-import { Component } from '@angular/core';
+import { ChangeDetectionStrategy, Component } from '@angular/core';
+import { Observable } from 'rxjs';
 import { CommandManagerService } from '../../command-manager';
 
 import { KanbanStateService } from '../kanban-state.service';
@@ -10,9 +11,10 @@ import { KanbanBoard, KanbanList, KanbanTask } from '../model';
   templateUrl: './kanban-board.component.html',
   styleUrls: ['./kanban-board.component.scss'],
   providers: [KanbanStateService, CommandManagerService],
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class KanbanBoardComponent {
-  board: KanbanBoard = this.kanbanService.board;
+  board$: Observable<KanbanBoard> = this.kanbanService.board$;
 
   constructor(private kanbanService: KanbanStateService) {}
 
@@ -20,16 +22,16 @@ export class KanbanBoardComponent {
     return element.id;
   }
 
-  addTaskToList(list: KanbanList): void {
-    this.kanbanService.addTaskToList(list);
+  addTaskToList(listIndex: number): void {
+    this.kanbanService.addTaskToList(listIndex);
   }
 
-  updateTitleInList(list: KanbanList, newTitle: string): void {
-    this.kanbanService.updateListTitle(list, newTitle);
+  updateTitleInList(listIndex: number, newTitle: string): void {
+    this.kanbanService.updateListTitle(listIndex, newTitle);
   }
 
-  removeList(list: KanbanList): void {
-    this.kanbanService.removeList(list);
+  removeList(listIndex: number): void {
+    this.kanbanService.removeList(listIndex);
   }
 
   moveList(dropEvent: CdkDragDrop<undefined>): void {
@@ -42,15 +44,19 @@ export class KanbanBoardComponent {
     this.kanbanService.moveList(previousIndex, currentIndex);
   }
 
-  removeTaskFromList(list: KanbanList, taskIndex: number): void {
-    this.kanbanService.removeTaskFromList(list, taskIndex);
+  removeTaskFromList(listIndex: number, taskIndex: number): void {
+    this.kanbanService.removeTaskFromList(listIndex, taskIndex);
   }
 
-  updateTaskDescription(task: KanbanTask, newDescription: string): void {
-    this.kanbanService.updateTask(task, newDescription);
+  updateTaskDescription(
+    listIndex: number,
+    taskIndex: number,
+    newDescription: string
+  ): void {
+    this.kanbanService.updateTask(listIndex, taskIndex, newDescription);
   }
 
-  moveTask(dropEvent: CdkDragDrop<KanbanList>): void {
+  moveTask(dropEvent: CdkDragDrop<number>): void {
     const { previousContainer, container, previousIndex, currentIndex } =
       dropEvent;
     const isSameContainer = previousContainer === container;
@@ -66,8 +72,8 @@ export class KanbanBoardComponent {
           currentIndex
         )
       : this.kanbanService.transferTask({
-          fromList: previousContainer.data,
-          toList: container.data,
+          fromListIndex: previousContainer.data,
+          toListIndex: container.data,
           fromIndex: previousIndex,
           toIndex: currentIndex,
         });

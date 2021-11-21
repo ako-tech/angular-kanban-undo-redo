@@ -1,4 +1,5 @@
 import { Injectable } from '@angular/core';
+import { BehaviorSubject, Observable } from 'rxjs';
 import { CommandManagerService } from '../command-manager';
 import {
   AddTaskToListCommand,
@@ -12,51 +13,67 @@ import {
 } from './commands';
 import { TransferTaskData } from './common';
 
-import { dummyBoard, KanbanBoard, KanbanList, KanbanTask } from './model';
+import { dummyBoard, KanbanBoard } from './model';
 
 @Injectable()
 export class KanbanStateService {
-  public board: KanbanBoard = dummyBoard;
+  private board = new BehaviorSubject<KanbanBoard>(dummyBoard);
+  board$: Observable<KanbanBoard> = this.board.asObservable();
 
   constructor(private commandManager: CommandManagerService) {}
 
-  updateListTitle(list: KanbanList, newTitle: string): void {
-    this.commandManager.execute(new UpdateListTitleCommand(list, newTitle));
+  updateListTitle(listIndex: number, newTitle: string): void {
+    this.commandManager.execute(
+      new UpdateListTitleCommand(this.board, listIndex, newTitle)
+    );
   }
 
   moveList(fromIndex: number, toIndex: number): void {
     this.commandManager.execute(
-      new ReorderListCommand(this.board.lists, fromIndex, toIndex)
+      new ReorderListCommand(this.board, fromIndex, toIndex)
     );
   }
 
-  removeList(listToRemove: KanbanList): void {
+  removeList(listIndex: number): void {
+    this.commandManager.execute(new RemoveListCommand(this.board, listIndex));
+  }
+
+  addTaskToList(listIndex: number): void {
     this.commandManager.execute(
-      new RemoveListCommand(this.board, listToRemove)
+      new AddTaskToListCommand(this.board, listIndex)
     );
   }
 
-  addTaskToList(list: KanbanList): void {
-    this.commandManager.execute(new AddTaskToListCommand(list));
-  }
-
-  removeTaskFromList(list: KanbanList, taskIndex: number): void {
-    this.commandManager.execute(new RemoveTaskFromListCommand(list, taskIndex));
-  }
-
-  updateTask(task: KanbanTask, newDescription: string): void {
+  removeTaskFromList(listIndex: number, taskIndex: number): void {
     this.commandManager.execute(
-      new UpdateTaskDescriptionCommand(task, newDescription)
+      new RemoveTaskFromListCommand(this.board, listIndex, taskIndex)
     );
   }
 
-  reorderTask(list: KanbanList, fromIndex: number, toIndex: number): void {
+  updateTask(
+    listIndex: number,
+    taskIndex: number,
+    newDescription: string
+  ): void {
     this.commandManager.execute(
-      new ReorderTaskCommand(list, fromIndex, toIndex)
+      new UpdateTaskDescriptionCommand(
+        this.board,
+        listIndex,
+        taskIndex,
+        newDescription
+      )
+    );
+  }
+
+  reorderTask(listIndex: number, fromIndex: number, toIndex: number): void {
+    this.commandManager.execute(
+      new ReorderTaskCommand(this.board, listIndex, fromIndex, toIndex)
     );
   }
 
   transferTask(transferData: TransferTaskData): void {
-    this.commandManager.execute(new TransferTaskCommand(transferData));
+    this.commandManager.execute(
+      new TransferTaskCommand(this.board, transferData)
+    );
   }
 }
