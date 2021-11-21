@@ -12,7 +12,7 @@ El repositorio esta dividido en ramas, cada una de las cuales se corresponde con
 - [Aplicación Base](https://github.com/ako-tech/angular-kanban-undo-redo)
 - [Angular CDK](https://github.com/ako-tech/angular-kanban-undo-redo/tree/cdk)
 - [Undo/Redo](https://github.com/ako-tech/angular-kanban-undo-redo/tree/commands)
-- Versión Reactiva
+- [Alternativa Reactiva e Immutable](https://github.com/ako-tech/angular-kanban-undo-redo/tree/immutable-reactive)
 
 ## Comandos
 
